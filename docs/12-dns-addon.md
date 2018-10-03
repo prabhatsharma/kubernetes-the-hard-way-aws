@@ -35,28 +35,27 @@ kube-dns-3097350089-gq015   3/3       Running   0          20s
 ## Verification
 
 Create a `dnsutils` pod
-(Not creating a busybox as it has [issue#356](https://github.com/kelseyhightower/kubernetes-the-hard-way/issues/356)  with DNS resolution):
 
 ```
-kubectl run netutils --image=hiprabhat/netutils:2 --restart=Never -- sleep 3600
+kubectl run busybox --image=busybox:1.28 --restart=Never -- sleep 3600
 ```
 
 Verify that the pod is running:
 
 ```sh
-kubectl get pod netutils
+kubectl get pod busybox
 ```
 
 Output:
 ```
 NAME       READY     STATUS    RESTARTS   AGE
-netutils   1/1       Running   0          45s
+busybox   1/1       Running   0          45s
 ```
 
 Execute a DNS lookup for the `kubernetes` service inside the `dnsutils` pod:
 
 ```
-kubectl exec -it netutils -- nslookup kubernetes
+kubectl exec -it busybox -- nslookup kubernetes
 ```
 
 > output

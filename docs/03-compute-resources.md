@@ -60,26 +60,26 @@ aws ec2 authorize-security-group-ingress --group-id ${SECURITY_GROUP_ID} --proto
 ### Kubernetes Public Access - Create a Network Load Balancer
 
 ```sh
-LOAD_BALANCER_ARN=$(aws elbv2 create-load-balancer \
-  --name kubernetes \
-  --subnets ${SUBNET_ID} \
-  --scheme internet-facing \
-  --type network \
-  --output text --query 'LoadBalancers[].LoadBalancerArn')
-TARGET_GROUP_ARN=$(aws elbv2 create-target-group \
-  --name kubernetes \
-  --protocol TCP \
-  --port 6443 \
-  --vpc-id ${VPC_ID} \
-  --target-type ip \
-  --output text --query 'TargetGroups[].TargetGroupArn')
-aws elbv2 register-targets --target-group-arn ${TARGET_GROUP_ARN} --targets Id=10.240.0.1{0,1,2}
-aws elbv2 create-listener \
-  --load-balancer-arn ${LOAD_BALANCER_ARN} \
-  --protocol TCP \
-  --port 443 \
-  --default-actions Type=forward,TargetGroupArn=${TARGET_GROUP_ARN} \
-  --output text --query 'Listeners[].ListenerArn'
+  LOAD_BALANCER_ARN=$(aws elbv2 create-load-balancer \
+    --name kubernetes \
+    --subnets ${SUBNET_ID} \
+    --scheme internet-facing \
+    --type network \
+    --output text --query 'LoadBalancers[].LoadBalancerArn')
+  TARGET_GROUP_ARN=$(aws elbv2 create-target-group \
+    --name kubernetes \
+    --protocol TCP \
+    --port 6443 \
+    --vpc-id ${VPC_ID} \
+    --target-type ip \
+    --output text --query 'TargetGroups[].TargetGroupArn')
+  aws elbv2 register-targets --target-group-arn ${TARGET_GROUP_ARN} --targets Id=10.240.0.1{0,1,2}
+  aws elbv2 create-listener \
+    --load-balancer-arn ${LOAD_BALANCER_ARN} \
+    --protocol TCP \
+    --port 443 \
+    --default-actions Type=forward,TargetGroupArn=${TARGET_GROUP_ARN} \
+    --output text --query 'Listeners[].ListenerArn'
 ```
 
 ```sh
@@ -124,6 +124,7 @@ for i in 0 1 2; do
     --private-ip-address 10.240.0.1${i} \
     --user-data "name=controller-${i}" \
     --subnet-id ${SUBNET_ID} \
+    --block-device-mappings='{"DeviceName": "/dev/sda1", "Ebs": { "VolumeSize": 50 }, "NoDevice": "" }' \
     --output text --query 'Instances[].InstanceId')
   aws ec2 modify-instance-attribute --instance-id ${instance_id} --no-source-dest-check
   aws ec2 create-tags --resources ${instance_id} --tags "Key=Name,Value=controller-${i}"
@@ -145,6 +146,7 @@ for i in 0 1 2; do
     --private-ip-address 10.240.0.2${i} \
     --user-data "name=worker-${i}|pod-cidr=10.200.${i}.0/24" \
     --subnet-id ${SUBNET_ID} \
+    --block-device-mappings='{"DeviceName": "/dev/sda1", "Ebs": { "VolumeSize": 50 }, "NoDevice": "" }' \
     --output text --query 'Instances[].InstanceId')
   aws ec2 modify-instance-attribute --instance-id ${instance_id} --no-source-dest-check
   aws ec2 create-tags --resources ${instance_id} --tags "Key=Name,Value=worker-${i}"
