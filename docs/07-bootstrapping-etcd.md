@@ -12,17 +12,11 @@ for instance in controller-0 controller-1 controller-2; do
     --filters "Name=tag:Name,Values=${instance}" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
   
-  echo $external_ip
+  echo ssh -i kubernetes.id_rsa ubuntu@$external_ip
 done
 ```
 
-Now ssh into each one of the IP addresses received in last step
-
-```
-ssh -i kubernetes.id_rsa ubuntu@${IP1 received in last step}
-ssh -i kubernetes.id_rsa ubuntu@${IP2 received in last step}
-ssh -i kubernetes.id_rsa ubuntu@${IP3 received in last step}
-```
+Now ssh into each one of the IP addresses received in last step.
 
 ### Running commands in parallel with tmux
 
