@@ -9,6 +9,7 @@ This is a fork of awesome [Kubernetes The Hard Way](https://github.com/kelseyhig
 5. Upgraded CNI plugins to v0.7.1
 6. Upgraded etcd to 3.3.9
 7. Added section on critools
+8. Upgraded kubernetes to v1.13.4
 
 # Kubernetes The Hard Way
 
@@ -26,7 +27,7 @@ The target audience for this tutorial is someone planning to support a productio
 
 Kubernetes The Hard Way guides you through bootstrapping a highly available Kubernetes cluster with end-to-end encryption between components and RBAC authentication.
 
-* [Kubernetes](https://github.com/kubernetes/kubernetes) 1.11.2
+* [Kubernetes](https://github.com/kubernetes/kubernetes) 1.13.4
 * [containerd Container Runtime](https://github.com/containerd/containerd) 1.2.0-beta.2
 * [gVisor](https://github.com/google/gvisor) 08879266fef3a67fac1a77f1ea133c3ac75759dd
 * [CNI Container Networking](https://github.com/containernetworking/cni) 0.7.1

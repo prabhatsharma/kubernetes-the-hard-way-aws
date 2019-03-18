@@ -36,10 +36,10 @@ Download the official Kubernetes release binaries:
 
 ```
 wget -q --show-progress --https-only --timestamping \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.11.2/bin/linux/amd64/kube-apiserver" \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.11.2/bin/linux/amd64/kube-controller-manager" \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.11.2/bin/linux/amd64/kube-scheduler" \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.11.2/bin/linux/amd64/kubectl"
+  "https://storage.googleapis.com/kubernetes-release/release/v1.13.4/bin/linux/amd64/kube-apiserver" \
+  "https://storage.googleapis.com/kubernetes-release/release/v1.13.4/bin/linux/amd64/kube-controller-manager" \
+  "https://storage.googleapis.com/kubernetes-release/release/v1.13.4/bin/linux/amd64/kube-scheduler" \
+  "https://storage.googleapis.com/kubernetes-release/release/v1.13.4/bin/linux/amd64/kubectl"
 ```
 
 Install the Kubernetes binaries:
@@ -162,7 +162,7 @@ Create the `kube-scheduler.yaml` configuration file:
 
 ```
 cat <<EOF | sudo tee /etc/kubernetes/config/kube-scheduler.yaml
-apiVersion: componentconfig/v1alpha1
+apiVersion: kubescheduler.config.k8s.io/v1alpha1
 kind: KubeSchedulerConfiguration
 clientConnection:
   kubeconfig: "/var/lib/kubernetes/kube-scheduler.kubeconfig"
@@ -301,12 +301,12 @@ curl -k --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}/version
 ```
 {
   "major": "1",
-  "minor": "11",
-  "gitVersion": "v1.11.2",
-  "gitCommit": "bb9ffb1654d4a729bb4cec18ff088eacc153c239",
+  "minor": "13",
+  "gitVersion": "v1.13.4",
+  "gitCommit": "c27b913fddd1a6c480c229191a087698aa92f0b1",
   "gitTreeState": "clean",
-  "buildDate": "2018-08-07T23:08:19Z",
-  "goVersion": "go1.10.3",
+  "buildDate": "2019-02-28T13:30:26Z",
+  "goVersion": "go1.11.5",
   "compiler": "gc",
   "platform": "linux/amd64"
 }
