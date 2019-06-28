@@ -271,6 +271,15 @@ Get the node name where the `untrusted` pod is running:
 
 ```
 INSTANCE_NAME=$(kubectl get pod untrusted --output=jsonpath='{.spec.nodeName}')
+```
+If you deployed the cluster on US-EAST-1 use the command below:
+```
+INSTANCE_IP=$(aws ec2 describe-instances \
+    --filters "Name=network-interface.private-dns-name,Values=${INSTANCE_NAME}.ec2.internal" \
+    --output text --query 'Reservations[].Instances[].PublicIpAddress')
+```
+If you deployed the cluster on ANY OTHER region use this command:
+```
 INSTANCE_IP=$(aws ec2 describe-instances \
     --filters "Name=network-interface.private-dns-name,Values=${INSTANCE_NAME}.${AWS_REGION}.compute.internal" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
