@@ -37,14 +37,14 @@ sudo apt-get -y install socat conntrack ipset
 
 ```
 wget -q --show-progress --https-only --timestamping \
-  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.13.0/crictl-v1.13.0-linux-amd64.tar.gz \
+  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.15.0/crictl-v1.15.0-linux-amd64.tar.gz \
   https://storage.googleapis.com/kubernetes-the-hard-way/runsc \
-  https://github.com/opencontainers/runc/releases/download/v1.0.0-rc5/runc.amd64 \
-  https://github.com/containernetworking/plugins/releases/download/v0.7.1/cni-plugins-amd64-v0.7.1.tgz \
-  https://github.com/containerd/containerd/releases/download/v1.2.0-beta.2/containerd-1.2.0-beta.2.linux-amd64.tar.gz \
-  https://storage.googleapis.com/kubernetes-release/release/v1.13.4/bin/linux/amd64/kubectl \
-  https://storage.googleapis.com/kubernetes-release/release/v1.13.4/bin/linux/amd64/kube-proxy \
-  https://storage.googleapis.com/kubernetes-release/release/v1.13.4/bin/linux/amd64/kubelet
+  https://github.com/opencontainers/runc/releases/download/v1.0.0-rc8/runc.amd64 \
+  https://github.com/containernetworking/plugins/releases/download/v0.8.2/cni-plugins-linux-amd64-v0.8.2.tgz \
+  https://github.com/containerd/containerd/releases/download/v1.2.9/containerd-1.2.9.linux-amd64.tar.gz \
+  https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl \
+  https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kube-proxy \
+  https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubelet
 ```
 
 Create the installation directories:
@@ -65,9 +65,9 @@ Install the worker binaries:
 chmod +x kubectl kube-proxy kubelet runc.amd64 runsc
 sudo mv runc.amd64 runc
 sudo mv kubectl kube-proxy kubelet runc runsc /usr/local/bin/
-sudo tar -xvf crictl-v1.13.0-linux-amd64.tar.gz -C /usr/local/bin/
-sudo tar -xvf cni-plugins-amd64-v0.7.1.tgz -C /opt/cni/bin/
-sudo tar -xvf containerd-1.2.0-beta.2.linux-amd64.tar.gz -C /
+sudo tar -xvf crictl-v1.15.0-linux-amd64.tar.gz -C /usr/local/bin/
+sudo tar -xvf cni-plugins-linux-amd64-v0.8.2.tgz -C /opt/cni/bin/
+sudo tar -xvf containerd-1.2.9.linux-amd64.tar.gz -C /
 ```
 
 ### Configure CNI Networking
@@ -199,6 +199,7 @@ podCIDR: "${POD_CIDR}"
 runtimeRequestTimeout: "15m"
 tlsCertFile: "/var/lib/kubelet/${WORKER_NAME}.pem"
 tlsPrivateKeyFile: "/var/lib/kubelet/${WORKER_NAME}-key.pem"
+resolvConf: "/run/systemd/resolve/resolv.conf"
 EOF
 ```
 

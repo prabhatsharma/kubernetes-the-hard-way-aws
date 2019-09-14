@@ -8,7 +8,7 @@
 
 ```sh
 VPC_ID=$(aws ec2 create-vpc --cidr-block 10.240.0.0/24 --output text --query 'Vpc.VpcId')
-aws ec2 create-tags --resources ${VPC_ID} --tags Key=Name,Value=kubernetes-the-hard-way
+aws ec2 create-tags --resources ${VPC_ID} --tags Key=Name,Value=kubernetes
 aws ec2 modify-vpc-attribute --vpc-id ${VPC_ID} --enable-dns-support '{"Value": true}'
 aws ec2 modify-vpc-attribute --vpc-id ${VPC_ID} --enable-dns-hostnames '{"Value": true}'
 ```
@@ -97,7 +97,7 @@ IMAGE_ID=$(aws ec2 describe-images --owners 099720109477 \
   --filters \
   'Name=root-device-type,Values=ebs' \
   'Name=architecture,Values=x86_64' \
-  'Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*' \
+  'Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*' \
   | jq -r '.Images|sort_by(.Name)[-1]|.ImageId')
 ```
 

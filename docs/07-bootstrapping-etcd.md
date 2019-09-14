@@ -11,7 +11,7 @@ for instance in controller-0 controller-1 controller-2; do
   external_ip=$(aws ec2 describe-instances \
     --filters "Name=tag:Name,Values=${instance}" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
-  
+
   echo ssh -i kubernetes.id_rsa ubuntu@$external_ip
 done
 ```
@@ -30,14 +30,14 @@ Download the official etcd release binaries from the [coreos/etcd](https://githu
 
 ```
 wget -q --show-progress --https-only --timestamping \
-  "https://github.com/etcd-io/etcd/releases/download/v3.3.9/etcd-v3.3.9-linux-amd64.tar.gz"
+  "https://github.com/etcd-io/etcd/releases/download/v3.3.10/etcd-v3.3.10-linux-amd64.tar.gz"
 ```
 
 Extract and install the `etcd` server and the `etcdctl` command line utility:
 
 ```
-tar -xvf etcd-v3.3.9-linux-amd64.tar.gz
-sudo mv etcd-v3.3.9-linux-amd64/etcd* /usr/local/bin/
+tar -xvf etcd-v3.3.10-linux-amd64.tar.gz
+sudo mv etcd-v3.3.10-linux-amd64/etcd* /usr/local/bin/
 ```
 
 ### Configure the etcd Server
