@@ -92,7 +92,7 @@ aws ec2 describe-route-tables \
             "State": "active"
         },
         {
-            "DestinationCidrBlock": "10.240.0.0/24",
+            "DestinationCidrBlock": "10.0.0.0/24",
             "GatewayId": "local",
             "Origin": "CreateRouteTable",
             "State": "active"
