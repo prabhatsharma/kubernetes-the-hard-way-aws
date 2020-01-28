@@ -223,6 +223,8 @@ In this section you will configure RBAC permissions to allow the Kubernetes API 
 
 > This tutorial sets the Kubelet `--authorization-mode` flag to `Webhook`. Webhook mode uses the [SubjectAccessReview](https://kubernetes.io/docs/admin/authorization/#checking-api-access) API to determine authorization.
 
+The commands in this section will effect the entire cluster and only need to be run once from one of the controller nodes.
+
 ```
 external_ip=$(aws ec2 describe-instances \
     --filters "Name=tag:Name,Values=controller-0" \
