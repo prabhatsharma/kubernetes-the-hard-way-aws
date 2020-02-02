@@ -3,13 +3,14 @@
 This is a fork of awesome [Kubernetes The Hard Way](https://github.com/kelseyhightower/kubernetes-the-hard-way) by Kelsey Hightower and is geared towards using it on AWS. Also thanks to [@slawekzachcial](https://github.com/slawekzachcial) for his [work](https://github.com/slawekzachcial/kubernetes-the-hard-way-aws) that made this easier. I have made some changes along the way:
 
 1. Provided an alternative to busybox for testing DNS resolution. This fixes [issue#356](https://github.com/kelseyhightower/kubernetes-the-hard-way/issues/356)
-2. Upgraded kubernetes to v1.11.2
-3. Upgraded cri-tools to v1.11.1
-4. Upgraded containerd to v1.2.0-beta.2
-5. Upgraded CNI plugins to v0.7.1
-6. Upgraded etcd to 3.3.9
+2. Upgraded kubernetes to v1.15.3
+3. Upgraded cri-tools to v1.15.0
+4. Upgraded containerd to v1.2.9
+5. Upgraded CNI plugins to v0.8.2
+6. Upgraded etcd to 3.3.10
 7. Added section on critools
-8. Upgraded kubernetes to v1.13.4
+8. Udated DNS section to use CoreDNS 1.6.3
+9. Updated base image to Ubuntu Bionic 18.04 LTS
 
 # Kubernetes The Hard Way
 
@@ -27,11 +28,11 @@ The target audience for this tutorial is someone planning to support a productio
 
 Kubernetes The Hard Way guides you through bootstrapping a highly available Kubernetes cluster with end-to-end encryption between components and RBAC authentication.
 
-* [Kubernetes](https://github.com/kubernetes/kubernetes) 1.13.4
-* [containerd Container Runtime](https://github.com/containerd/containerd) 1.2.0-beta.2
+* [Kubernetes](https://github.com/kubernetes/kubernetes) 1.15.3
+* [containerd Container Runtime](https://github.com/containerd/containerd) 1.2.9
 * [gVisor](https://github.com/google/gvisor) 08879266fef3a67fac1a77f1ea133c3ac75759dd
-* [CNI Container Networking](https://github.com/containernetworking/cni) 0.7.1
-* [etcd](https://github.com/coreos/etcd) 3.3.9
+* [CNI Container Networking](https://github.com/containernetworking/cni) 0.8.2
+* [etcd](https://github.com/coreos/etcd) 3.3.10
 
 ## Labs
 
