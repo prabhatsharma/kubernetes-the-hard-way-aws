@@ -199,6 +199,7 @@ podCIDR: "${POD_CIDR}"
 runtimeRequestTimeout: "15m"
 tlsCertFile: "/var/lib/kubelet/${WORKER_NAME}.pem"
 tlsPrivateKeyFile: "/var/lib/kubelet/${WORKER_NAME}-key.pem"
+resolvConf: "/run/systemd/resolve/resolv.conf"
 EOF
 ```
 

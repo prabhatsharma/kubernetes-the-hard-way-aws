@@ -62,13 +62,13 @@ In this section you will verify the ability to create and manage [Deployments](h
 Create a deployment for the [nginx](https://nginx.org/en/) web server:
 
 ```
-kubectl run nginx --image=nginx
+kubectl create deployment nginx --image=nginx
 ```
 
 List the pod created by the `nginx` deployment:
 
 ```
-kubectl get pods -l run=nginx
+kubectl get pods -l app=nginx
 ```
 
 > output
@@ -85,7 +85,7 @@ In this section you will verify the ability to access applications remotely usin
 Retrieve the full name of the `nginx` pod:
 
 ```
-POD_NAME=$(kubectl get pods -l run=nginx -o jsonpath="{.items[0].metadata.name}")
+POD_NAME=$(kubectl get pods -l app=nginx -o jsonpath="{.items[0].metadata.name}")
 ```
 
 Forward port `8080` on your local machine to port `80` of the `nginx` pod:
@@ -111,13 +111,13 @@ curl --head http://127.0.0.1:8080
 
 ```
 HTTP/1.1 200 OK
-Server: nginx/1.13.12
-Date: Mon, 14 May 2018 13:59:21 GMT
+Server: nginx/1.17.3
+Date: Sat, 14 Sep 2019 13:54:34 GMT
 Content-Type: text/html
 Content-Length: 612
-Last-Modified: Mon, 09 Apr 2018 16:01:09 GMT
+Last-Modified: Tue, 13 Aug 2019 08:50:00 GMT
 Connection: keep-alive
-ETag: "5acb8e45-264"
+ETag: "5d5279b8-264"
 Accept-Ranges: bytes
 ```
 
@@ -159,7 +159,7 @@ kubectl exec -ti $POD_NAME -- nginx -v
 > output
 
 ```
-nginx version: nginx/1.13.12
+nginx version: nginx/1.17.3
 ```
 
 ## Services
@@ -196,13 +196,17 @@ Retrieve the external IP address of a worker instance:
 ```
 INSTANCE_NAME=$(kubectl get pod $POD_NAME --output=jsonpath='{.spec.nodeName}')
 ```
+
 If you deployed the cluster on US-EAST-1 use the command below:
+
 ```
 EXTERNAL_IP=$(aws ec2 describe-instances \
     --filters "Name=network-interface.private-dns-name,Values=${INSTANCE_NAME}.ec2.internal" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 ```
+
 If you deployed the cluster on ANY OTHER region use this command:
+
 ```
 EXTERNAL_IP=$(aws ec2 describe-instances \
     --filters "Name=network-interface.private-dns-name,Values=${INSTANCE_NAME}.${AWS_REGION}.compute.internal" \
@@ -219,13 +223,13 @@ curl -I http://${EXTERNAL_IP}:${NODE_PORT}
 
 ```
 HTTP/1.1 200 OK
-Server: nginx/1.13.12
-Date: Mon, 14 May 2018 14:01:30 GMT
+Server: nginx/1.17.3
+Date: Sat, 14 Sep 2019 13:54:34 GMT
 Content-Type: text/html
 Content-Length: 612
-Last-Modified: Mon, 09 Apr 2018 16:01:09 GMT
+Last-Modified: Tue, 13 Aug 2019 08:50:00 GMT
 Connection: keep-alive
-ETag: "5acb8e45-264"
+ETag: "5d5279b8-264"
 Accept-Ranges: bytes
 ```
 
@@ -259,9 +263,10 @@ Verify the `untrusted` pod is running:
 ```
 kubectl get pods -o wide
 ```
+
 ```
 NAME                     READY     STATUS    RESTARTS   AGE       IP           NODE             NOMINATED NODE
-netutils                 1/1       Running   0          5m        10.200.0.2   ip-10-240-0-20   <none>
+busybox                  1/1       Running   0          5m        10.200.0.2   ip-10-240-0-20   <none>
 nginx-64f497f8fd-l6b78   1/1       Running   0          3m        10.200.1.2   ip-10-240-0-21   <none>
 untrusted                1/1       Running   0          8s        10.200.2.3   ip-10-240-0-22   <none>
 ```
@@ -272,13 +277,17 @@ Get the node name where the `untrusted` pod is running:
 ```
 INSTANCE_NAME=$(kubectl get pod untrusted --output=jsonpath='{.spec.nodeName}')
 ```
+
 If you deployed the cluster on US-EAST-1 use the command below:
+
 ```
 INSTANCE_IP=$(aws ec2 describe-instances \
     --filters "Name=network-interface.private-dns-name,Values=${INSTANCE_NAME}.ec2.internal" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 ```
+
 If you deployed the cluster on ANY OTHER region use this command:
+
 ```
 INSTANCE_IP=$(aws ec2 describe-instances \
     --filters "Name=network-interface.private-dns-name,Values=${INSTANCE_NAME}.${AWS_REGION}.compute.internal" \
@@ -296,6 +305,7 @@ List the containers running under gVisor:
 ```
 sudo runsc --root  /run/containerd/runsc/k8s.io list
 ```
+
 ```
 I0514 14:03:56.108368   14988 x:0] ***************************
 I0514 14:03:56.108548   14988 x:0] Args: [runsc --root /run/containerd/runsc/k8s.io list]

@@ -11,7 +11,7 @@ for instance in controller-0 controller-1 controller-2; do
   external_ip=$(aws ec2 describe-instances \
     --filters "Name=tag:Name,Values=${instance}" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
-  
+
   echo ssh -i kubernetes.id_rsa ubuntu@$external_ip
 done
 ```
@@ -151,6 +151,10 @@ EOF
 
 ### Configure the Kubernetes Scheduler
 
+```
+sudo mkdir -p /etc/kubernetes/config/
+```
+
 Move the `kube-scheduler` kubeconfig into place:
 
 ```
@@ -205,7 +209,7 @@ Now check status of your controller components
 kubectl get componentstatuses
 ```
 
-Output: 
+Output:
 ```
 NAME                 STATUS    MESSAGE             ERROR
 controller-manager   Healthy   ok
@@ -221,6 +225,8 @@ Yay !!! - Controllers are up
 In this section you will configure RBAC permissions to allow the Kubernetes API Server to access the Kubelet API on each worker node. Access to the Kubelet API is required for retrieving metrics, logs, and executing commands in pods.
 
 > This tutorial sets the Kubelet `--authorization-mode` flag to `Webhook`. Webhook mode uses the [SubjectAccessReview](https://kubernetes.io/docs/admin/authorization/#checking-api-access) API to determine authorization.
+
+The commands in this section will effect the entire cluster and only need to be run once from one of the controller nodes.
 
 ```
 external_ip=$(aws ec2 describe-instances \
