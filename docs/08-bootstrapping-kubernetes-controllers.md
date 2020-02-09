@@ -301,4 +301,20 @@ Make a HTTP request for the Kubernetes version info:
 curl -k --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}/version
 ```
 
+> output
+
+```
+{
+  "major": "1",
+  "minor": "17",
+  "gitVersion": "v1.17.2",
+  "gitCommit": "59603c6e503c87169aea6106f57b9f242f64df89",
+  "gitTreeState": "clean",
+  "buildDate": "2020-01-18T23:22:30Z",
+  "goVersion": "go1.13.5",
+  "compiler": "gc",
+  "platform": "linux/amd64"
+}
+```
+
 Next: [Bootstrapping the Kubernetes Worker Nodes](09-bootstrapping-kubernetes-workers.md)
