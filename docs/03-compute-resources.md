@@ -7,8 +7,8 @@
 ### VPC
 
 ```sh
-VPC_ID=$(aws ec2 create-vpc --cidr-block 10.240.0.0/24 --output text --query 'Vpc.VpcId')
-aws ec2 create-tags --resources ${VPC_ID} --tags Key=Name,Value=kubernetes
+VPC_ID=$(aws ec2 create-vpc --cidr-block 10.0.0.0/16 --output text --query 'Vpc.VpcId')
+aws ec2 create-tags --resources ${VPC_ID} --tags Key=Name,Value=kubernetes-the-hard-way
 aws ec2 modify-vpc-attribute --vpc-id ${VPC_ID} --enable-dns-support '{"Value": true}'
 aws ec2 modify-vpc-attribute --vpc-id ${VPC_ID} --enable-dns-hostnames '{"Value": true}'
 ```
@@ -18,7 +18,7 @@ aws ec2 modify-vpc-attribute --vpc-id ${VPC_ID} --enable-dns-hostnames '{"Value"
 ```sh
 SUBNET_ID=$(aws ec2 create-subnet \
   --vpc-id ${VPC_ID} \
-  --cidr-block 10.240.0.0/24 \
+  --cidr-block 10.0.1.0/24 \
   --output text --query 'Subnet.SubnetId')
 aws ec2 create-tags --resources ${SUBNET_ID} --tags Key=Name,Value=kubernetes
 ```
@@ -49,7 +49,7 @@ SECURITY_GROUP_ID=$(aws ec2 create-security-group \
   --vpc-id ${VPC_ID} \
   --output text --query 'GroupId')
 aws ec2 create-tags --resources ${SECURITY_GROUP_ID} --tags Key=Name,Value=kubernetes
-aws ec2 authorize-security-group-ingress --group-id ${SECURITY_GROUP_ID} --protocol all --cidr 10.240.0.0/24
+aws ec2 authorize-security-group-ingress --group-id ${SECURITY_GROUP_ID} --protocol all --cidr 10.0.0.0/16
 aws ec2 authorize-security-group-ingress --group-id ${SECURITY_GROUP_ID} --protocol all --cidr 10.200.0.0/16
 aws ec2 authorize-security-group-ingress --group-id ${SECURITY_GROUP_ID} --protocol tcp --port 22 --cidr 0.0.0.0/0
 aws ec2 authorize-security-group-ingress --group-id ${SECURITY_GROUP_ID} --protocol tcp --port 6443 --cidr 0.0.0.0/0
@@ -73,7 +73,7 @@ aws ec2 authorize-security-group-ingress --group-id ${SECURITY_GROUP_ID} --proto
     --vpc-id ${VPC_ID} \
     --target-type ip \
     --output text --query 'TargetGroups[].TargetGroupArn')
-  aws elbv2 register-targets --target-group-arn ${TARGET_GROUP_ARN} --targets Id=10.240.0.1{0,1,2}
+  aws elbv2 register-targets --target-group-arn ${TARGET_GROUP_ARN} --targets Id=10.0.1.1{0,1,2}
   aws elbv2 create-listener \
     --load-balancer-arn ${LOAD_BALANCER_ARN} \
     --protocol TCP \
@@ -121,7 +121,7 @@ for i in 0 1 2; do
     --key-name kubernetes \
     --security-group-ids ${SECURITY_GROUP_ID} \
     --instance-type t3.micro \
-    --private-ip-address 10.240.0.1${i} \
+    --private-ip-address 10.0.1.1${i} \
     --user-data "name=controller-${i}" \
     --subnet-id ${SUBNET_ID} \
     --block-device-mappings='{"DeviceName": "/dev/sda1", "Ebs": { "VolumeSize": 50 }, "NoDevice": "" }' \
@@ -143,7 +143,7 @@ for i in 0 1 2; do
     --key-name kubernetes \
     --security-group-ids ${SECURITY_GROUP_ID} \
     --instance-type t3.micro \
-    --private-ip-address 10.240.0.2${i} \
+    --private-ip-address 10.0.1.2${i} \
     --user-data "name=worker-${i}|pod-cidr=10.200.${i}.0/24" \
     --subnet-id ${SUBNET_ID} \
     --block-device-mappings='{"DeviceName": "/dev/sda1", "Ebs": { "VolumeSize": 50 }, "NoDevice": "" }' \
