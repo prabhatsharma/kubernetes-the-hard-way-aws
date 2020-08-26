@@ -36,10 +36,10 @@ Download the official Kubernetes release binaries:
 
 ```
 wget -q --show-progress --https-only --timestamping \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.17.2/bin/linux/amd64/kube-apiserver" \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.17.2/bin/linux/amd64/kube-controller-manager" \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.17.2/bin/linux/amd64/kube-scheduler" \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.17.2/bin/linux/amd64/kubectl"
+  "https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kube-apiserver" \
+  "https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kube-controller-manager" \
+  "https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kube-scheduler" \
+  "https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl"
 ```
 
 Install the Kubernetes binaries:
@@ -96,7 +96,7 @@ ExecStart=/usr/local/bin/kube-apiserver \\
   --kubelet-client-certificate=/var/lib/kubernetes/kubernetes.pem \\
   --kubelet-client-key=/var/lib/kubernetes/kubernetes-key.pem \\
   --kubelet-https=true \\
-  --runtime-config api/all=true \\
+  --runtime-config='api/all=true' \\
   --service-account-key-file=/var/lib/kubernetes/service-account.pem \\
   --service-cluster-ip-range=10.32.0.0/24 \\
   --service-node-port-range=30000-32767 \\
@@ -129,7 +129,7 @@ Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
 ExecStart=/usr/local/bin/kube-controller-manager \\
-  --address=0.0.0.0 \\
+  --bind-address=0.0.0.0 \\
   --cluster-cidr=10.200.0.0/16 \\
   --cluster-name=kubernetes \\
   --cluster-signing-cert-file=/var/lib/kubernetes/ca.pem \\
@@ -304,14 +304,14 @@ curl -k --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}/version
 > output
 
 ```
-{
+{ 
   "major": "1",
-  "minor": "17",
-  "gitVersion": "v1.17.2",
-  "gitCommit": "59603c6e503c87169aea6106f57b9f242f64df89",
+  "minor": "18",
+  "gitVersion": "v1.18.6",
+  "gitCommit": "dff82dc0de47299ab66c83c626e08b245ab19037",
   "gitTreeState": "clean",
-  "buildDate": "2020-01-18T23:22:30Z",
-  "goVersion": "go1.13.5",
+  "buildDate": "2020-07-15T16:51:04Z",
+  "goVersion": "go1.13.9",
   "compiler": "gc",
   "platform": "linux/amd64"
 }
