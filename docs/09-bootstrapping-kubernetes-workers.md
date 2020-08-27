@@ -67,7 +67,8 @@ sudo mv runc.amd64 runc
 sudo mv kubectl kube-proxy kubelet runc runsc /usr/local/bin/
 sudo tar -xvf crictl-v1.18.0-linux-amd64.tar.gz -C /usr/local/bin/
 sudo tar -xvf cni-plugins-linux-amd64-v0.8.6.tgz -C /opt/cni/bin/
-sudo tar -xvf containerd-1.3.6-linux-amd64.tar.gz -C /
+sudo tar -xvf containerd-1.3.6-linux-amd64.tar.gz
+sudo mv bin/* /bin/
 ```
 
 ### Configure CNI Networking
@@ -271,16 +272,6 @@ EOF
 ```
 
 ### Start the Worker Services
-
-## Fix Ubuntu broken '/bin/modprobe' link
-
-In the latest version of Ubuntu 20.04 LTS (Focal) at the time of testing had the /sbin/modprobe symlink pointing to a invalid entry.  The utilty `modprobe` is needed for loading kernel modules and used by containerd, which will fail to start unless corrected:
-
-```
-! [[ -r /sbin/modprobe ]] && sudo ln -s /usr/bin/kmod /bin/kmod
-```
-
-## Start services
 
 ```
 sudo systemctl daemon-reload
