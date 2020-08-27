@@ -15,8 +15,9 @@ kubectl create secret generic kubernetes-the-hard-way --from-literal="mykey=myda
 Print a hexdump of the `kubernetes-the-hard-way` secret stored in etcd:
 
 ```sh
-external_ip=$(aws ec2 describe-instances \
-  --filters "Name=tag:Name,Values=controller-0" \
+external_ip=$(aws ec2 describe-instances --filters \
+  "Name=tag:Name,Values=controller-0" \
+  "Name=instance-state-name,Values=running" \
   --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
 ssh -i kubernetes.id_rsa ubuntu@${external_ip}
@@ -368,8 +369,9 @@ I0514 14:05:16.501354   15096 x:0] Exiting with status: 0
 Log in to a worker node. You can do this on all 3 workers to see the resources on each of them:
 
 ```sh
-external_ip=$(aws ec2 describe-instances \
-  --filters "Name=tag:Name,Values=worker-0" \
+external_ip=$(aws ec2 describe-instances --filters \
+  "Name=tag:Name,Values=worker-0" \
+  "Name=instance-state-name,Values=running" \
   --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
 ssh -i kubernetes.id_rsa ubuntu@${external_ip}

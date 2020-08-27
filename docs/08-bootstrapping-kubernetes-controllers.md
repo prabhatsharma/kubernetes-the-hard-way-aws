@@ -8,8 +8,9 @@ The commands in this lab must be run on each controller instance: `controller-0`
 
 ```
 for instance in controller-0 controller-1 controller-2; do
-  external_ip=$(aws ec2 describe-instances \
-    --filters "Name=tag:Name,Values=${instance}" \
+  external_ip=$(aws ec2 describe-instances --filters \
+    "Name=tag:Name,Values=${instance}" \
+    "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
   echo ssh -i kubernetes.id_rsa ubuntu@$external_ip
@@ -229,8 +230,9 @@ In this section you will configure RBAC permissions to allow the Kubernetes API 
 The commands in this section will effect the entire cluster and only need to be run once from one of the controller nodes.
 
 ```
-external_ip=$(aws ec2 describe-instances \
-    --filters "Name=tag:Name,Values=controller-0" \
+external_ip=$(aws ec2 describe-instances --filters \
+    "Name=tag:Name,Values=controller-0" \
+    "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
 ssh -i kubernetes.id_rsa ubuntu@${external_ip}
