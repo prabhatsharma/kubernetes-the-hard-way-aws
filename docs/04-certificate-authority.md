@@ -370,7 +370,8 @@ for instance in worker-0 worker-1 worker-2; do
     --filters "Name=tag:Name,Values=${instance}" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
-  scp -i kubernetes.id_rsa ca.pem ${instance}-key.pem ${instance}.pem ubuntu@${external_ip}:~/
+  scp -i kubernetes.id_rsa -o StrictHostKeyChecking=no \
+    ca.pem ${instance}-key.pem ${instance}.pem ubuntu@${external_ip}:~/
 done
 ```
 
@@ -382,7 +383,7 @@ for instance in controller-0 controller-1 controller-2; do
     --filters "Name=tag:Name,Values=${instance}" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
-  scp -i kubernetes.id_rsa \
+  scp -i kubernetes.id_rsa -o StrictHostKeyChecking=no \
     ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
     service-account-key.pem service-account.pem ubuntu@${external_ip}:~/
 done
