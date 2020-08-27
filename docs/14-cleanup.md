@@ -52,8 +52,9 @@ ROUTE_TABLE_ASSOCIATION_ID="$(aws ec2 describe-route-tables \
   --route-table-ids "${ROUTE_TABLE_ID}" \
   --output text --query 'RouteTables[].Associations[].RouteTableAssociationId')"
 aws ec2 disassociate-route-table --association-id "${ROUTE_TABLE_ASSOCIATION_ID}"
-
 aws ec2 delete-route-table --route-table-id "${ROUTE_TABLE_ID}"
+echo "Waiting a minute for all public address(es) to be unmapped.. " && sleep 60
+
 aws ec2 detach-internet-gateway \
   --internet-gateway-id "${INTERNET_GATEWAY_ID}" \
   --vpc-id "${VPC_ID}"
