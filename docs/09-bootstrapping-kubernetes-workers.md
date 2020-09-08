@@ -37,14 +37,14 @@ sudo apt-get -y install socat conntrack ipset
 
 ```
 wget -q --show-progress --https-only --timestamping \
-  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.17.0/crictl-v1.17.0-linux-amd64.tar.gz \
+  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.18.0/crictl-v1.18.0-linux-amd64.tar.gz \
   https://storage.googleapis.com/kubernetes-the-hard-way/runsc \
-  https://github.com/opencontainers/runc/releases/download/v1.0.0-rc10/runc.amd64 \
-  https://github.com/containernetworking/plugins/releases/download/v0.8.5/cni-plugins-linux-amd64-v0.8.5.tgz \
-  https://github.com/containerd/containerd/releases/download/v1.3.2/containerd-1.3.2.linux-amd64.tar.gz \
-  https://storage.googleapis.com/kubernetes-release/release/v1.17.2/bin/linux/amd64/kubectl \
-  https://storage.googleapis.com/kubernetes-release/release/v1.17.2/bin/linux/amd64/kube-proxy \
-  https://storage.googleapis.com/kubernetes-release/release/v1.17.2/bin/linux/amd64/kubelet
+  https://github.com/opencontainers/runc/releases/download/v1.0.0-rc91/runc.amd64 \
+  https://github.com/containernetworking/plugins/releases/download/v0.8.6/cni-plugins-linux-amd64-v0.8.6.tgz \
+  https://github.com/containerd/containerd/releases/download/v1.3.6/containerd-1.3.6-linux-amd64.tar.gz \
+  https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl \
+  https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kube-proxy \
+  https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubelet
 ```
 
 Create the installation directories:
@@ -65,9 +65,10 @@ Install the worker binaries:
 chmod +x kubectl kube-proxy kubelet runc.amd64 runsc
 sudo mv runc.amd64 runc
 sudo mv kubectl kube-proxy kubelet runc runsc /usr/local/bin/
-sudo tar -xvf crictl-v1.17.0-linux-amd64.tar.gz -C /usr/local/bin/
-sudo tar -xvf cni-plugins-linux-amd64-v0.8.5.tgz -C /opt/cni/bin/
-sudo tar -xvf containerd-1.3.2.linux-amd64.tar.gz -C /
+sudo tar -xvf crictl-v1.18.0-linux-amd64.tar.gz -C /usr/local/bin/
+sudo tar -xvf cni-plugins-linux-amd64-v0.8.6.tgz -C /opt/cni/bin/
+sudo tar -xvf containerd-1.3.6-linux-amd64.tar.gz
+sudo mv bin/* /bin/
 ```
 
 ### Configure CNI Networking
@@ -108,6 +109,7 @@ Create the `loopback` network configuration file:
 cat <<EOF | sudo tee /etc/cni/net.d/99-loopback.conf
 {
     "cniVersion": "0.3.1",
+    "name": "lo",
     "type": "loopback"
 }
 EOF
@@ -299,9 +301,9 @@ kubectl get nodes --kubeconfig admin.kubeconfig
 
 ```
 NAME             STATUS   ROLES    AGE   VERSION
-ip-10-0-1-20   Ready    <none>   51s   v1.17.2
-ip-10-0-1-21   Ready    <none>   51s   v1.17.2
-ip-10-0-1-22   Ready    <none>   51s   v1.17.2
+ip-10-0-1-20   Ready    <none>   51s   v1.18.6
+ip-10-0-1-21   Ready    <none>   51s   v1.18.6
+ip-10-0-1-22   Ready    <none>   51s   v1.18.6
 ```
 
 Next: [Configuring kubectl for Remote Access](10-configuring-kubectl.md)
