@@ -8,8 +8,9 @@ The commands in this lab must be run on each worker instance: `worker-0`, `worke
 
 ```
 for instance in worker-0 worker-1 worker-2; do
-  external_ip=$(aws ec2 describe-instances \
-    --filters "Name=tag:Name,Values=${instance}" \
+  external_ip=$(aws ec2 describe-instances --filters \
+    "Name=tag:Name,Values=${instance}" \
+    "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
   echo ssh -i kubernetes.id_rsa ubuntu@$external_ip
@@ -288,8 +289,9 @@ sudo systemctl start containerd kubelet kube-proxy
 List the registered Kubernetes nodes:
 
 ```
-external_ip=$(aws ec2 describe-instances \
-    --filters "Name=tag:Name,Values=controller-0" \
+external_ip=$(aws ec2 describe-instances --filters \
+    "Name=tag:Name,Values=controller-0" \
+    "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
 ssh -i kubernetes.id_rsa ubuntu@${external_ip}

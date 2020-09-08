@@ -126,12 +126,14 @@ for i in 0 1 2; do
 }
 EOF
 
-  external_ip=$(aws ec2 describe-instances \
-    --filters "Name=tag:Name,Values=${instance}" \
+  external_ip=$(aws ec2 describe-instances --filters \
+    "Name=tag:Name,Values=${instance}" \
+    "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
-  internal_ip=$(aws ec2 describe-instances \
-    --filters "Name=tag:Name,Values=${instance}" \
+  internal_ip=$(aws ec2 describe-instances --filters \
+    "Name=tag:Name,Values=${instance}" \
+    "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PrivateIpAddress')
 
   cfssl gencert \
@@ -366,8 +368,9 @@ Copy the appropriate certificates and private keys to each worker instance:
 
 ```
 for instance in worker-0 worker-1 worker-2; do
-  external_ip=$(aws ec2 describe-instances \
-    --filters "Name=tag:Name,Values=${instance}" \
+  external_ip=$(aws ec2 describe-instances --filters \
+    "Name=tag:Name,Values=${instance}" \
+    "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
   scp -i kubernetes.id_rsa ca.pem ${instance}-key.pem ${instance}.pem ubuntu@${external_ip}:~/
@@ -378,8 +381,9 @@ Copy the appropriate certificates and private keys to each controller instance:
 
 ```
 for instance in controller-0 controller-1 controller-2; do
-  external_ip=$(aws ec2 describe-instances \
-    --filters "Name=tag:Name,Values=${instance}" \
+  external_ip=$(aws ec2 describe-instances --filters \
+    "Name=tag:Name,Values=${instance}" \
+    "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
   scp -i kubernetes.id_rsa \

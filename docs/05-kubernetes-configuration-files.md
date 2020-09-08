@@ -189,8 +189,9 @@ Copy the appropriate `kubelet` and `kube-proxy` kubeconfig files to each worker 
 
 ```
 for instance in worker-0 worker-1 worker-2; do
-  external_ip=$(aws ec2 describe-instances \
-    --filters "Name=tag:Name,Values=${instance}" \
+  external_ip=$(aws ec2 describe-instances --filters \
+    "Name=tag:Name,Values=${instance}" \
+    "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
   scp -i kubernetes.id_rsa \
@@ -202,8 +203,9 @@ Copy the appropriate `kube-controller-manager` and `kube-scheduler` kubeconfig f
 
 ```
 for instance in controller-0 controller-1 controller-2; do
-  external_ip=$(aws ec2 describe-instances \
-    --filters "Name=tag:Name,Values=${instance}" \
+  external_ip=$(aws ec2 describe-instances --filters \
+    "Name=tag:Name,Values=${instance}" \
+    "Name=instance-state-name,Values=running" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
   
   scp -i kubernetes.id_rsa \

@@ -15,8 +15,9 @@ kubectl create secret generic kubernetes-the-hard-way --from-literal="mykey=myda
 Print a hexdump of the `kubernetes-the-hard-way` secret stored in etcd:
 
 ```sh
-external_ip=$(aws ec2 describe-instances \
-  --filters "Name=tag:Name,Values=controller-0" \
+external_ip=$(aws ec2 describe-instances --filters \
+  "Name=tag:Name,Values=controller-0" \
+  "Name=instance-state-name,Values=running" \
   --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
 ssh -i kubernetes.id_rsa ubuntu@${external_ip}
@@ -197,25 +198,18 @@ aws ec2 authorize-security-group-ingress \
   --cidr 0.0.0.0/0
 ```
 
-Retrieve the external IP address of a worker instance:
+Get the worker node name where the `nginx` pod is running:
 
 ```
 INSTANCE_NAME=$(kubectl get pod $POD_NAME --output=jsonpath='{.spec.nodeName}')
 ```
 
-If you deployed the cluster on US-EAST-1 use the command below:
+Retrieve the external IP address of a worker instance:
 
 ```
-EXTERNAL_IP=$(aws ec2 describe-instances \
-    --filters "Name=network-interface.private-dns-name,Values=${INSTANCE_NAME}.ec2.internal" \
-    --output text --query 'Reservations[].Instances[].PublicIpAddress')
-```
-
-If you deployed the cluster on ANY OTHER region use this command:
-
-```
-EXTERNAL_IP=$(aws ec2 describe-instances \
-    --filters "Name=network-interface.private-dns-name,Values=${INSTANCE_NAME}.${AWS_REGION}.compute.internal" \
+EXTERNAL_IP=$(aws ec2 describe-instances --filters \
+    "Name=instance-state-name,Values=running" \
+    "Name=network-interface.private-dns-name,Values=${INSTANCE_NAME}.*.internal*" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 ```
 
@@ -284,19 +278,12 @@ Get the node name where the `untrusted` pod is running:
 INSTANCE_NAME=$(kubectl get pod untrusted --output=jsonpath='{.spec.nodeName}')
 ```
 
-If you deployed the cluster on US-EAST-1 use the command below:
+Retrieve the external IP address of a worker instance:
 
 ```
-INSTANCE_IP=$(aws ec2 describe-instances \
-    --filters "Name=network-interface.private-dns-name,Values=${INSTANCE_NAME}.ec2.internal" \
-    --output text --query 'Reservations[].Instances[].PublicIpAddress')
-```
-
-If you deployed the cluster on ANY OTHER region use this command:
-
-```
-INSTANCE_IP=$(aws ec2 describe-instances \
-    --filters "Name=network-interface.private-dns-name,Values=${INSTANCE_NAME}.${AWS_REGION}.compute.internal" \
+INSTANCE_IP=$(aws ec2 describe-instances --filters \
+    "Name=instance-state-name,Values=running" \
+    "Name=network-interface.private-dns-name,Values=${INSTANCE_NAME}.*.internal*" \
     --output text --query 'Reservations[].Instances[].PublicIpAddress')
 ```
 
@@ -374,8 +361,9 @@ I0514 14:05:16.501354   15096 x:0] Exiting with status: 0
 Log in to a worker node. You can do this on all 3 workers to see the resources on each of them:
 
 ```sh
-external_ip=$(aws ec2 describe-instances \
-  --filters "Name=tag:Name,Values=worker-0" \
+external_ip=$(aws ec2 describe-instances --filters \
+  "Name=tag:Name,Values=worker-0" \
+  "Name=instance-state-name,Values=running" \
   --output text --query 'Reservations[].Instances[].PublicIpAddress')
 
 ssh -i kubernetes.id_rsa ubuntu@${external_ip}
