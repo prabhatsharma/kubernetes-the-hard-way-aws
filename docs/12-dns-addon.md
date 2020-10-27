@@ -4,7 +4,7 @@ In this lab you will deploy the [DNS add-on](https://kubernetes.io/docs/concepts
 
 ## The DNS Cluster Add-on
 
-Deploy the `kube-dns` cluster add-on:
+Deploy the `core-dns` cluster add-on:
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/prabhatsharma/kubernetes-the-hard-way-aws/master/deployments/core-dns.yaml
@@ -13,13 +13,15 @@ kubectl apply -f https://raw.githubusercontent.com/prabhatsharma/kubernetes-the-
 > output
 
 ```
-service "kube-dns" created
-serviceaccount "kube-dns" created
-configmap "kube-dns" created
-deployment.extensions "kube-dns" created
+serviceaccount/coredns created
+clusterrole.rbac.authorization.k8s.io/system:coredns created
+clusterrolebinding.rbac.authorization.k8s.io/system:coredns created
+configmap/coredns created
+deployment.apps/coredns created
+service/kube-dns created
 ```
 
-List the pods created by the `kube-dns` deployment:
+List the pods created by the `core-dns` deployment:
 
 ```
 kubectl get pods -l k8s-app=kube-dns -n kube-system
@@ -29,7 +31,7 @@ kubectl get pods -l k8s-app=kube-dns -n kube-system
 
 ```
 NAME                        READY     STATUS    RESTARTS   AGE
-kube-dns-3097350089-gq015   3/3       Running   0          20s
+coredns-7c65667b68-xc9d6    1/1       Running   0          20s
 ```
 
 ## Verification
