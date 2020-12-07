@@ -16,7 +16,7 @@ Print the internal IP address and Pod CIDR range for each worker instance and cr
 
 ```sh
 VPC_ID=$(aws ec2 describe-vpcs --filters 'Name=tag:Name,Values=kubernetes-the-hard-way' --output text --query 'Vpcs[0].VpcId')
-ROUTE_TABLE_ID=$(aws ec2 create-route-table --vpc-id ${VPC_ID} --output text --query 'RouteTable.RouteTableId')
+ROUTE_TABLE_ID=$(aws ec2 describe-route-tables --filters 'Name=tag:Name,Values=kubernetes' "Name=vpc-id,Values=$VPC_ID" --output text --query 'RouteTables[0].RouteTableId')
 for instance in worker-0 worker-1 worker-2; do
   instance_id_ip="$(aws ec2 describe-instances \
     --filters "Name=tag:Name,Values=${instance}" \
