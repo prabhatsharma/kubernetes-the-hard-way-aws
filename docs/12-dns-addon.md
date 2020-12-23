@@ -13,10 +13,12 @@ kubectl apply -f https://raw.githubusercontent.com/prabhatsharma/kubernetes-the-
 > output
 
 ```
-service "kube-dns" created
-serviceaccount "kube-dns" created
-configmap "kube-dns" created
-deployment.extensions "kube-dns" created
+serviceaccount/coredns created
+clusterrole.rbac.authorization.k8s.io/system:coredns created
+clusterrolebinding.rbac.authorization.k8s.io/system:coredns created
+configmap/coredns created
+deployment.apps/coredns created
+service/kube-dns created
 ```
 
 List the pods created by the `kube-dns` deployment:
@@ -28,8 +30,8 @@ kubectl get pods -l k8s-app=kube-dns -n kube-system
 > output
 
 ```
-NAME                        READY     STATUS    RESTARTS   AGE
-kube-dns-3097350089-gq015   3/3       Running   0          20s
+NAME                       READY   STATUS    RESTARTS   AGE
+coredns-7c65667b68-hxzdp   1/1     Running   0          17s
 ```
 
 ## Verification
