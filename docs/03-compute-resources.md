@@ -94,6 +94,7 @@ KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
 
 ```sh
 IMAGE_ID=$(aws ec2 describe-images --owners 099720109477 \
+  --output json \
   --filters \
   'Name=root-device-type,Values=ebs' \
   'Name=architecture,Values=x86_64' \
