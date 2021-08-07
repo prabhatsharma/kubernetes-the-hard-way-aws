@@ -195,7 +195,6 @@ EOF
 ### Start the Controller Services
 
 ```
-<<<<<<< HEAD
 sudo systemctl daemon-reload
 sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler
 sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
@@ -214,6 +213,24 @@ Kubernetes control plane is running at https://127.0.0.1:6443
 ```
 
 > Remember to run the above command on each controller node: `controller-0`, `controller-1`, and `controller-2`.
+
+### Add Host File Entries
+
+In order for `kubectl exec` commands to work, the controller nodes must each
+be able to resolve the worker hostnames.  This is not set up by default in
+AWS.  The workaround is to add manual host entries on each of the controller
+nodes with this command:
+
+```
+cat <<EOF | sudo tee -a /etc/hosts
+10.0.1.20 ip-10-0-1-20
+10.0.1.21 ip-10-0-1-21
+10.0.1.22 ip-10-0-1-22
+EOF
+```
+
+> If this step is missed, the [DNS Cluster Add-on](12-dns-addon.md) testing will
+fail with an error like this: `Error from server: error dialing backend: dial tcp: lookup ip-10-0-1-22 on 127.0.0.53:53: server misbehaving`
 
 ## RBAC for Kubelet Authorization
 
@@ -280,7 +297,6 @@ subjects:
 EOF
 ```
 
-<<<<<<< HEAD
 ### Verification of cluster public endpoint
 
 > The compute instances created in this tutorial will not have permission to complete this section. **Run the following commands from the same machine used to create the compute instances**.
