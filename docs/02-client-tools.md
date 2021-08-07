@@ -7,7 +7,7 @@ In this lab you will install the command line utilities required to complete thi
 
 The `cfssl` and `cfssljson` command line utilities will be used to provision a [PKI Infrastructure](https://en.wikipedia.org/wiki/Public_key_infrastructure) and generate TLS certificates.
 
-Download and install `cfssl` and `cfssljson` from the [cfssl repository](https://pkg.cfssl.org):
+Download and install `cfssl` and `cfssljson`:
 
 ### OS X
 
@@ -43,11 +43,7 @@ chmod +x cfssl cfssljson
 ```
 
 ```
-sudo mv cfssl /usr/local/bin/
-```
-
-```
-sudo mv cfssljson /usr/local/bin/
+sudo mv cfssl cfssljson /usr/local/bin/
 ```
 
 ### Verification
@@ -62,21 +58,16 @@ cfssl version
 
 ```
 Version: 1.4.1
-Runtime: go1.12.12.
+Runtime: go1.12.12
 ```
 
 ```
 cfssljson --version
 ```
-
-> output
-
 ```
 Version: 1.4.1
-Runtime: go1.12.12.
+Runtime: go1.12.12
 ```
-
-> The cfssljson command line utility does not provide a way to print its version.
 
 ## Install kubectl
 
@@ -85,7 +76,7 @@ The `kubectl` command line utility is used to interact with the Kubernetes API S
 ### OS X
 
 ```
-curl -o kubectl https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/darwin/amd64/kubectl
+curl -o kubectl https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/darwin/amd64/kubectl
 ```
 
 ```
@@ -99,7 +90,7 @@ sudo mv kubectl /usr/local/bin/
 ### Linux
 
 ```
-wget https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl
+wget https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl
 ```
 
 ```
@@ -112,7 +103,7 @@ sudo mv kubectl /usr/local/bin/
 
 ### Verification
 
-Verify `kubectl` version 1.18.6 or higher is installed:
+Verify `kubectl` version 1.21.0 or higher is installed:
 
 ```
 kubectl version --client
@@ -121,7 +112,7 @@ kubectl version --client
 > output
 
 ```
-Client Version: version.Info{Major:"1", Minor:"18", GitVersion:"v1.18.6", GitCommit:"dff82dc0de47299ab66c83c626e08b245ab19037", GitTreeState:"clean", BuildDate:"2020-07-15T16:58:53Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"darwin/amd64"}
+Client Version: version.Info{Major:"1", Minor:"21", GitVersion:"v1.21.0", GitCommit:"cb303e613a121a29364f75cc67d3d580833a7479", GitTreeState:"clean", BuildDate:"2021-04-08T16:31:21Z", GoVersion:"go1.16.1", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
 Next: [Provisioning Compute Resources](03-compute-resources.md)

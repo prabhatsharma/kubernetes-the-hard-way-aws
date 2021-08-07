@@ -1,22 +1,24 @@
 # Deploying the DNS Cluster Add-on
 
-In this lab you will deploy the [DNS add-on](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/) which provides DNS based service discovery to applications running inside the Kubernetes cluster.
+In this lab you will deploy the [DNS add-on](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/) which provides DNS based service discovery, backed by [CoreDNS](https://coredns.io/), to applications running inside the Kubernetes cluster.
 
 ## The DNS Cluster Add-on
 
-Deploy the `kube-dns` cluster add-on:
+Deploy the `coredns` cluster add-on:
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/prabhatsharma/kubernetes-the-hard-way-aws/master/deployments/core-dns.yaml
+kubectl apply -f https://storage.googleapis.com/kubernetes-the-hard-way/coredns-1.8.yaml
 ```
 
 > output
 
 ```
-service "kube-dns" created
-serviceaccount "kube-dns" created
-configmap "kube-dns" created
-deployment.extensions "kube-dns" created
+serviceaccount/coredns created
+clusterrole.rbac.authorization.k8s.io/system:coredns created
+clusterrolebinding.rbac.authorization.k8s.io/system:coredns created
+configmap/coredns created
+deployment.apps/coredns created
+service/kube-dns created
 ```
 
 List the pods created by the `kube-dns` deployment:
@@ -28,34 +30,42 @@ kubectl get pods -l k8s-app=kube-dns -n kube-system
 > output
 
 ```
-NAME                        READY     STATUS    RESTARTS   AGE
-kube-dns-3097350089-gq015   3/3       Running   0          20s
+NAME                       READY   STATUS    RESTARTS   AGE
+coredns-8494f9c688-hh7r2   1/1     Running   0          10s
+coredns-8494f9c688-zqrj2   1/1     Running   0          10s
 ```
 
 ## Verification
 
-Create a `dnsutils` pod
+Create a `busybox` deployment:
 
 ```
-kubectl run busybox --image=busybox:1.28 --restart=Never -- sleep 3600
+kubectl run busybox --image=busybox:1.28 --command -- sleep 3600
 ```
 
-Verify that the pod is running:
-
-```sh
-kubectl get pod busybox
-```
-
-Output:
-```
-NAME       READY     STATUS    RESTARTS   AGE
-busybox   1/1       Running   0          45s
-```
-
-Execute a DNS lookup for the `kubernetes` service inside the `dnsutils` pod:
+List the pod created by the `busybox` deployment:
 
 ```
-kubectl exec -it busybox -- nslookup kubernetes
+kubectl get pods -l run=busybox
+```
+
+> output
+
+```
+NAME      READY   STATUS    RESTARTS   AGE
+busybox   1/1     Running   0          3s
+```
+
+Retrieve the full name of the `busybox` pod:
+
+```
+POD_NAME=$(kubectl get pods -l run=busybox -o jsonpath="{.items[0].metadata.name}")
+```
+
+Execute a DNS lookup for the `kubernetes` service inside the `busybox` pod:
+
+```
+kubectl exec -ti $POD_NAME -- nslookup kubernetes
 ```
 
 > output
