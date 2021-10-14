@@ -33,21 +33,17 @@ kubectl config use-context kubernetes-the-hard-way
 
 ## Verification
 
-Check the health of the remote Kubernetes cluster:
+Check the version of the remote Kubernetes cluster:
 
 ```
-kubectl get componentstatuses
+kubectl version
 ```
 
 > output
 
 ```
-NAME                 STATUS    MESSAGE             ERROR
-controller-manager   Healthy   ok
-scheduler            Healthy   ok
-etcd-1               Healthy   {"health":"true"}
-etcd-2               Healthy   {"health":"true"}
-etcd-0               Healthy   {"health":"true"}
+Client Version: version.Info{Major:"1", Minor:"21", GitVersion:"v1.21.0", GitCommit:"cb303e613a121a29364f75cc67d3d580833a7479", GitTreeState:"clean", BuildDate:"2021-04-08T16:31:21Z", GoVersion:"go1.16.1", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"21", GitVersion:"v1.21.0", GitCommit:"cb303e613a121a29364f75cc67d3d580833a7479", GitTreeState:"clean", BuildDate:"2021-04-08T16:25:06Z", GoVersion:"go1.16.1", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
 List the nodes in the remote Kubernetes cluster:
@@ -59,10 +55,10 @@ kubectl get nodes
 > output
 
 ```
-NAME             STATUS   ROLES    AGE     VERSION
-ip-10-0-1-20   Ready    <none>   3m35s   v1.17.2
-ip-10-0-1-21   Ready    <none>   3m35s   v1.17.2
-ip-10-0-1-22   Ready    <none>   3m35s   v1.17.2
+NAME           STATUS   ROLES    AGE     VERSION
+ip-10-0-1-20   Ready    <none>   3m35s   v1.21.0
+ip-10-0-1-21   Ready    <none>   3m35s   v1.21.0
+ip-10-0-1-22   Ready    <none>   3m35s   v1.21.0
 ```
 
 Next: [Provisioning Pod Network Routes](11-pod-network-routes.md)
