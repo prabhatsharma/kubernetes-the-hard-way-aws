@@ -21,7 +21,7 @@ deployment.apps/coredns created
 service/kube-dns created
 ```
 
-List the pods created by the `kube-dns` deployment:
+List the pods created by the `core-dns` deployment:
 
 ```
 kubectl get pods -l k8s-app=kube-dns -n kube-system
