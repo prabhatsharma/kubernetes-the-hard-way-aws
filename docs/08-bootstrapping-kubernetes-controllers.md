@@ -37,10 +37,10 @@ Download the official Kubernetes release binaries:
 
 ```
 wget -q --show-progress --https-only --timestamping \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kube-apiserver" \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kube-controller-manager" \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kube-scheduler" \
-  "https://storage.googleapis.com/kubernetes-release/release/v1.18.6/bin/linux/amd64/kubectl"
+  "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kube-apiserver" \
+  "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kube-controller-manager" \
+  "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kube-scheduler" \
+  "https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl"
 ```
 
 Install the Kubernetes binaries:
@@ -96,9 +96,10 @@ ExecStart=/usr/local/bin/kube-apiserver \\
   --kubelet-certificate-authority=/var/lib/kubernetes/ca.pem \\
   --kubelet-client-certificate=/var/lib/kubernetes/kubernetes.pem \\
   --kubelet-client-key=/var/lib/kubernetes/kubernetes-key.pem \\
-  --kubelet-https=true \\
   --runtime-config='api/all=true' \\
   --service-account-key-file=/var/lib/kubernetes/service-account.pem \\
+  --service-account-signing-key-file=/var/lib/kubernetes/service-account-key.pem \\
+  --service-account-issuer=https://${KUBERNETES_PUBLIC_ADDRESS}:443 \\
   --service-cluster-ip-range=10.32.0.0/24 \\
   --service-node-port-range=30000-32767 \\
   --tls-cert-file=/var/lib/kubernetes/kubernetes.pem \\
@@ -152,10 +153,6 @@ EOF
 
 ### Configure the Kubernetes Scheduler
 
-```
-sudo mkdir -p /etc/kubernetes/config/
-```
-
 Move the `kube-scheduler` kubeconfig into place:
 
 ```
@@ -166,7 +163,7 @@ Create the `kube-scheduler.yaml` configuration file:
 
 ```
 cat <<EOF | sudo tee /etc/kubernetes/config/kube-scheduler.yaml
-apiVersion: kubescheduler.config.k8s.io/v1alpha1
+apiVersion: kubescheduler.config.k8s.io/v1beta1
 kind: KubeSchedulerConfiguration
 clientConnection:
   kubeconfig: "/var/lib/kubernetes/kube-scheduler.kubeconfig"
@@ -203,23 +200,37 @@ sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler
 sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 ```
 
-> Allow up to 30 seconds for the Kubernetes API Server to fully initialize.
+> Allow up to 10 seconds for the Kubernetes API Server to fully initialize.
 
-Now check status of your controller components
-```sh
-kubectl get componentstatuses
+### Verification
+
+```
+kubectl cluster-info --kubeconfig admin.kubeconfig
 ```
 
-Output:
 ```
-NAME                 STATUS    MESSAGE             ERROR
-controller-manager   Healthy   ok
-scheduler            Healthy   ok
-etcd-0               Healthy   {"health":"true"}
-etcd-2               Healthy   {"health":"true"}
-etcd-1               Healthy   {"health":"true"}
+Kubernetes control plane is running at https://127.0.0.1:6443
 ```
-Yay !!! - Controllers are up
+
+> Remember to run the above command on each controller node: `controller-0`, `controller-1`, and `controller-2`.
+
+### Add Host File Entries
+
+In order for `kubectl exec` commands to work, the controller nodes must each
+be able to resolve the worker hostnames.  This is not set up by default in
+AWS.  The workaround is to add manual host entries on each of the controller
+nodes with this command:
+
+```
+cat <<EOF | sudo tee -a /etc/hosts
+10.0.1.20 ip-10-0-1-20
+10.0.1.21 ip-10-0-1-21
+10.0.1.22 ip-10-0-1-22
+EOF
+```
+
+> If this step is missed, the [DNS Cluster Add-on](12-dns-addon.md) testing will
+fail with an error like this: `Error from server: error dialing backend: dial tcp: lookup ip-10-0-1-22 on 127.0.0.53:53: server misbehaving`
 
 ## RBAC for Kubelet Authorization
 
@@ -242,7 +253,7 @@ Create the `system:kube-apiserver-to-kubelet` [ClusterRole](https://kubernetes.i
 
 ```
 cat <<EOF | kubectl apply --kubeconfig admin.kubeconfig -f -
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   annotations:
@@ -270,7 +281,7 @@ Bind the `system:kube-apiserver-to-kubelet` ClusterRole to the `kubernetes` user
 
 ```
 cat <<EOF | kubectl apply --kubeconfig admin.kubeconfig -f -
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: system:kube-apiserver
@@ -286,9 +297,10 @@ subjects:
 EOF
 ```
 
-### Verification of cluster public endpoint - From your laptop
+### Verification of cluster public endpoint
 
-Run this command on the machine from where you started setup (e.g. Your personal laptop)
+> The compute instances created in this tutorial will not have permission to complete this section. **Run the following commands from the same machine used to create the compute instances**.
+
 Retrieve the `kubernetes-the-hard-way` Load Balancer address:
 
 ```
@@ -300,20 +312,20 @@ KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
 Make a HTTP request for the Kubernetes version info:
 
 ```
-curl -k --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}/version
+curl --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}/version
 ```
 
 > output
 
 ```
-{ 
+{
   "major": "1",
-  "minor": "18",
-  "gitVersion": "v1.18.6",
-  "gitCommit": "dff82dc0de47299ab66c83c626e08b245ab19037",
+  "minor": "21",
+  "gitVersion": "v1.21.0",
+  "gitCommit": "cb303e613a121a29364f75cc67d3d580833a7479",
   "gitTreeState": "clean",
-  "buildDate": "2020-07-15T16:51:04Z",
-  "goVersion": "go1.13.9",
+  "buildDate": "2021-04-08T16:25:06Z",
+  "goVersion": "go1.16.1",
   "compiler": "gc",
   "platform": "linux/amd64"
 }
