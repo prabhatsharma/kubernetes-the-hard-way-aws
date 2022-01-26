@@ -312,7 +312,7 @@ KUBERNETES_PUBLIC_ADDRESS=$(aws elbv2 describe-load-balancers \
 Make a HTTP request for the Kubernetes version info:
 
 ```
-curl --cacert ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}/version
+curl --cacert ca.pem https://$KUBERNETES_PUBLIC_ADDRESS/version 
 ```
 
 > output
