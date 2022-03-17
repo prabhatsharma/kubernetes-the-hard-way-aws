@@ -6,7 +6,7 @@ In this lab you will provision a [PKI Infrastructure](https://en.wikipedia.org/w
 
 In this section you will provision a Certificate Authority that can be used to generate additional TLS certificates.
 
-Generate the CA configuration file, certificate, and private key:
+Generate the [CA configuration file](https://github.com/cloudflare/cfssl/blob/master/doc/cmd/cfssl.txt#L23), [CSR (Certificate Signing Request)](https://github.com/cloudflare/cfssl/wiki/Creating-a-new-CSR#creating-a-csr-with-cfssl), certificate, and private key:
 
 ```
 cat > ca-config.json <<EOF
