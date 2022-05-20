@@ -31,14 +31,22 @@ aws configure set default.region $AWS_REGION
 ```
 
 
-## Running Commands in Parallel with tmux
+## Running Commands in Parallel
 
-[tmux](https://github.com/tmux/tmux/wiki) can be used to run commands on multiple compute instances at the same time. Labs in this tutorial may require running the same commands across multiple compute instances, in those cases consider using tmux and splitting a window into multiple panes with synchronize-panes enabled to speed up the provisioning process.
+Some code editors such as [tmux](https://github.com/tmux/tmux/wiki) or [iTerm2](https://iterm2.com/) can be used to run commands on multiple compute instances at the same time. Labs in this tutorial may require running the same commands across multiple compute instances, in those cases consider splitting a window into multiple panes to speed up the provisioning process.
 
-> The use of tmux is optional and not required to complete this tutorial.
+> The use of tmux or iTerm2 is optional and not required to complete this tutorial.
+
+### Using tmux
+
+tmux can synchronize panes by enabling synchronize-panes.
 
 ![tmux screenshot](images/tmux-screenshot.png)
 
 > Enable synchronize-panes by pressing `ctrl+b` followed by `shift+:`. Next type `set synchronize-panes on` at the prompt. To disable synchronization: `set synchronize-panes off`.
+
+### Using iTerm2
+
+iTerm2 can synchronize panes by pressing `cmd` + `shift` + `i`.
 
 Next: [Installing the Client Tools](02-client-tools.md)
