@@ -32,16 +32,32 @@ brew install cfssl
 
 ### Linux
 
+Find the architecture using the following command (example output given).
 ```
-wget -q --show-progress --https-only --timestamping \
-  https://storage.googleapis.com/kubernetes-the-hard-way/cfssl/1.4.1/linux/cfssl \
-  https://storage.googleapis.com/kubernetes-the-hard-way/cfssl/1.4.1/linux/cfssljson
+$ lscpu | grep -i 'model name\|arch'
+Architecture:                       x86_64
+Model name:                         AMD EPYC 7763 64-Core Processor
 ```
 
+We could set the [version](https://github.com/cloudflare/cfssl/releases/tag/v1.6.5) and architecture as variables, download the tools and rename those.
+```
+VERSION="1.6.5"
+ARCH="amd64"
+
+wget -q --show-progress \ 
+  https://github.com/cloudflare/cfssl/releases/download/v${VERSION}/cfssl_${VERSION}_linux_${ARCH} \ 
+  https://github.com/cloudflare/cfssl/releases/download/v${VERSION}/cfssljson_${VERSION}_linux_${ARCH}
+
+mv cfssl_${VERSION}_linux_${ARCH} cfssl
+mv cfssljson_${VERSION}_linux_${ARCH} cfssljson
+```
+
+Make those binaries executable.
 ```
 chmod +x cfssl cfssljson
 ```
 
+Move them to the `/usr/local/bin` so that they could be run from anywhere on the system. 
 ```
 sudo mv cfssl cfssljson /usr/local/bin/
 ```
